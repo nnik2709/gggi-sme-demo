@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>GGGI SME Collector - Mobile Demo</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Roboto', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .demo-container {
+      max-width: 1200px;
+      width: 100%;
+      background: white;
+      border-radius: 20px;
+      padding: 40px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .demo-header {
+      text-align: center;
+      margin-bottom: 40px;
+    }
+
+    .demo-header h1 {
+      font-size: 32px;
+      color: #2E7D32;
+      margin-bottom: 10px;
+    }
+
+    .demo-header p {
+      font-size: 16px;
+      color: #666;
+    }
+
+    .phone-frame {
+      max-width: 380px;
+      margin: 0 auto;
+      background: #1a1a1a;
+      border-radius: 40px;
+      padding: 12px;
+      box-shadow: 0 10px 50px rgba(0, 0, 0, 0.5);
+      position: relative;
+    }
+
+    .phone-notch {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 140px;
+      height: 28px;
+      background: #1a1a1a;
+      border-radius: 0 0 18px 18px;
+      z-index: 10;
+    }
+
+    .phone-screen {
+      background: #f5f5f5;
+      border-radius: 32px;
+      overflow: hidden;
+      height: 720px;
+      position: relative;
+    }
+
+    .status-bar {
+      background: #2E7D32;
+      color: white;
+      padding: 28px 20px 10px;
+      display: flex;
+      justify-content: space-between;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .offline-bar {
+      background: #FFA000;
+      color: white;
+      padding: 8px 15px;
+      text-align: center;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .screen-content {
+      height: calc(100% - 90px);
+      overflow-y: auto;
+      background: white;
+      position: relative;
+    }
+
+    .screen {
+      display: none;
+      padding: 30px 20px;
+      min-height: 100%;
+      background: white;
+    }
+
+    .screen.active {
+      display: block !important;
+    }
+
+    /* Login Screen */
+    .app-logo {
+      width: 90px;
+      height: 90px;
+      background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+      border-radius: 22px;
+      margin: 0 auto 25px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 45px;
+      box-shadow: 0 4px 15px rgba(46, 125, 50, 0.3);
+    }
+
+    /* Debug styles */
+    #screen1.active {
+      background: white !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+
+    .screen h2 {
+      text-align: center;
+      font-size: 26px;
+      color: #333;
+      margin-bottom: 8px;
+    }
+
+    .screen > p {
+      text-align: center;
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    .language-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+      margin-bottom: 30px;
+    }
+
+    .lang-btn {
+      padding: 10px 24px;
+      border: 2px solid #2E7D32;
+      background: white;
+      color: #2E7D32;
+      border-radius: 25px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .lang-btn.active {
+      background: #2E7D32;
+      color: white;
+    }
+
+    .input-box {
+      margin-bottom: 18px;
+    }
+
+    .input-box label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 600;
+      color: #333;
+      font-size: 14px;
+    }
+
+    .input-box input {
+      width: 100%;
+      padding: 14px;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 16px;
+      transition: border 0.3s;
+    }
+
+    .input-box input:focus {
+      outline: none;
+      border-color: #2E7D32;
+    }
+
+    .btn-primary {
+      width: 100%;
+      padding: 16px;
+      background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+      color: white;
+      border: none;
+      border-radius: 12px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: transform 0.2s;
+      box-shadow: 0 4px 12px rgba(46, 125, 50, 0.3);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    /* Dashboard Screen */
+    .dashboard-top {
+      background: linear-gradient(135deg, #2E7D32 0%, #1B5E20 100%);
+      color: white;
+      padding: 25px;
+      margin: -30px -20px 0;
+      border-radius: 0 0 25px 25px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-top h2 {
+      color: white;
+      text-align: left;
+      font-size: 22px;
+      margin-bottom: 5px;
+    }
+
+    .dashboard-top p {
+      text-align: left;
+      font-size: 14px;
+      opacity: 0.95;
+    }
+
+    .progress-card {
+      background: white;
+      margin: -25px 15px 25px;
+      padding: 22px;
+      border-radius: 16px;
+      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+    }
+
+    .progress-row {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 12px;
+      font-weight: 600;
+    }
+
+    .progress-bar {
+      height: 10px;
+      background: #e8f5e9;
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 12px;
+    }
+
+    .progress-fill {
+      height: 100%;
+      background: linear-gradient(90deg, #2E7D32 0%, #4CAF50 100%);
+      width: 40%;
+      transition: width 0.5s;
+    }
+
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+      margin: 25px 0;
+    }
+
+    .stat-box {
+      background: #f8f9fa;
+      padding: 18px;
+      border-radius: 12px;
+      text-align: center;
+    }
+
+    .stat-number {
+      font-size: 28px;
+      font-weight: 700;
+      color: #2E7D32;
+      margin-bottom: 5px;
+    }
+
+    .stat-text {
+      font-size: 13px;
+      color: #666;
+    }
+
+    .actions-title {
+      font-weight: 600;
+      color: #666;
+      margin-bottom: 15px;
+      font-size: 14px;
+    }
+
+    .action-card {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px;
+      background: white;
+      border: 2px solid #e8f5e9;
+      border-radius: 12px;
+      margin-bottom: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .action-card:hover {
+      border-color: #2E7D32;
+      background: #f1f8f4;
+      transform: translateX(3px);
+    }
+
+    .action-left {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .action-icon {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #2E7D32 0%, #4CAF50 100%);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 22px;
+    }
+
+    .action-text h4 {
+      font-size: 15px;
+      margin-bottom: 3px;
+      color: #333;
+    }
+
+    .action-text p {
+      font-size: 12px;
+      color: #666;
+    }
+
+    /* Survey Screen */
+    .survey-header {
+      background: #2E7D32;
+      color: white;
+      padding: 18px 20px;
+      margin: -30px -20px 0;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .back-arrow {
+      font-size: 26px;
+      cursor: pointer;
+    }
+
+    .survey-title {
+      flex: 1;
+    }
+
+    .survey-title h3 {
+      font-size: 18px;
+      margin-bottom: 2px;
+    }
+
+    .survey-title p {
+      font-size: 13px;
+      opacity: 0.9;
+    }
+
+    .steps-bar {
+      background: white;
+      padding: 15px 20px;
+      margin: 0 -20px;
+      border-bottom: 1px solid #e0e0e0;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .step-dots {
+      display: flex;
+      gap: 8px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      background: #e0e0e0;
+      border-radius: 50%;
+      transition: all 0.3s;
+    }
+
+    .dot.active {
+      background: #2E7D32;
+      width: 28px;
+      border-radius: 10px;
+    }
+
+    .survey-body {
+      padding: 25px 0;
+    }
+
+    .question-title {
+      font-size: 19px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 10px;
+    }
+
+    .question-help {
+      font-size: 14px;
+      color: #666;
+      line-height: 1.5;
+      margin-bottom: 25px;
+    }
+
+    .location-box {
+      background: #f5f9f5;
+      padding: 25px;
+      border-radius: 14px;
+      text-align: center;
+      border: 2px solid #e8f5e9;
+    }
+
+    .gps-check {
+      font-size: 55px;
+      color: #4CAF50;
+      margin-bottom: 15px;
+    }
+
+    .location-box h3 {
+      color: #4CAF50;
+      font-size: 20px;
+      margin-bottom: 15px;
+    }
+
+    .coords {
+      font-family: 'Courier New', monospace;
+      font-size: 14px;
+      color: #666;
+      margin: 12px 0;
+      line-height: 1.6;
+    }
+
+    .accuracy {
+      display: inline-block;
+      background: #4CAF50;
+      color: white;
+      padding: 6px 14px;
+      border-radius: 15px;
+      font-size: 12px;
+      font-weight: 600;
+      margin-top: 8px;
+    }
+
+    .location-place {
+      margin-top: 18px;
+      font-size: 14px;
+      color: #666;
+    }
+
+    .btn-secondary {
+      width: 100%;
+      padding: 14px;
+      background: #f5f5f5;
+      color: #333;
+      border: 2px solid #e0e0e0;
+      border-radius: 12px;
+      font-size: 15px;
+      font-weight: 600;
+      cursor: pointer;
+      margin: 20px 0;
+      transition: all 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background: #e8f5e9;
+      border-color: #2E7D32;
+      color: #2E7D32;
+    }
+
+    /* Success Screen */
+    .success-check {
+      width: 110px;
+      height: 110px;
+      background: linear-gradient(135deg, #4CAF50 0%, #66BB6A 100%);
+      border-radius: 50%;
+      margin: 40px auto 30px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 60px;
+      color: white;
+      box-shadow: 0 8px 25px rgba(76, 175, 80, 0.4);
+      animation: scaleUp 0.5s ease-out;
+    }
+
+    @keyframes scaleUp {
+      0% { transform: scale(0); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .success-screen h2 {
+      font-size: 26px;
+      margin-bottom: 12px;
+    }
+
+    .success-screen > p {
+      margin-bottom: 30px;
+    }
+
+    .id-box {
+      background: #f5f5f5;
+      padding: 18px;
+      border-radius: 12px;
+      margin: 30px 0;
+      text-align: center;
+    }
+
+    .id-label {
+      font-size: 12px;
+      color: #666;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .id-code {
+      font-family: 'Courier New', monospace;
+      font-size: 18px;
+      font-weight: 700;
+      color: #333;
+    }
+
+    .sync-notice {
+      background: #FFF3E0;
+      padding: 16px;
+      border-radius: 12px;
+      color: #E65100;
+      font-size: 14px;
+      margin-bottom: 30px;
+      border-left: 4px solid #FF9800;
+      line-height: 1.5;
+    }
+
+    /* Navigation */
+    .nav-bar {
+      position: fixed;
+      bottom: 25px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      padding: 12px 25px;
+      border-radius: 35px;
+      box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+      display: flex;
+      gap: 12px;
+      z-index: 100;
+    }
+
+    .nav-btn {
+      padding: 10px 20px;
+      border: 2px solid #2E7D32;
+      background: white;
+      color: #2E7D32;
+      border-radius: 22px;
+      cursor: pointer;
+      font-weight: 600;
+      font-size: 14px;
+      transition: all 0.3s;
+    }
+
+    .nav-btn:hover {
+      background: #2E7D32;
+      color: white;
+      transform: translateY(-2px);
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-container">
+    <div class="demo-header">
+      <h1>📱 GGGI SME Collector - Mobile Demo</h1>
+      <p>Interactive demonstration of the mobile data collection app</p>
+    </div>
+
+    <div class="phone-frame">
+      <div class="phone-notch"></div>
+      <div class="phone-screen">
+        <div class="status-bar">
+          <span>⏰ 9:41</span>
+          <span>📶 ⚡ 67%</span>
+        </div>
+        <div class="offline-bar">
+          🔴 Working Offline - 3 surveys pending sync
+        </div>
+
+        <div class="screen-content">
+          <!-- Login Screen -->
+          <div id="screen1" class="screen active">
+            <div class="app-logo">🌱</div>
+            <h2 id="appTitle">GGGI SME Collector</h2>
+            <p id="appSubtitle">Papua New Guinea SME Database</p>
+
+            <div class="language-btns">
+              <button class="lang-btn active" onclick="setLang('en')">English</button>
+              <button class="lang-btn" onclick="setLang('tp')">Tok Pisin</button>
+            </div>
+
+            <div class="input-box">
+              <label>Username</label>
+              <input type="text" value="rose.kila" readonly>
+            </div>
+
+            <div class="input-box">
+              <label>Password</label>
+              <input type="password" value="demo123" readonly>
+            </div>
+
+            <button class="btn-primary" onclick="goTo(2)">Sign In</button>
+          </div>
+
+          <!-- Dashboard Screen -->
+          <div id="screen2" class="screen">
+            <div class="dashboard-top">
+              <h2>Welcome, Rose! 👋</h2>
+              <p>Thursday, February 6, 2026</p>
+            </div>
+
+            <div class="progress-card">
+              <div class="progress-row">
+                <span style="font-weight: 600;">Today's Progress</span>
+                <span style="color: #2E7D32; font-weight: 700;">4 / 10</span>
+              </div>
+              <div class="progress-bar">
+                <div class="progress-fill"></div>
+              </div>
+              <p style="font-size: 13px; color: #666;">6 more surveys to reach daily target</p>
+            </div>
+
+            <div class="stats-grid">
+              <div class="stat-box">
+                <div class="stat-number">42</div>
+                <div class="stat-text">Total Surveys</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number">3</div>
+                <div class="stat-text">Pending Sync</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number">67%</div>
+                <div class="stat-text">Battery</div>
+              </div>
+              <div class="stat-box">
+                <div class="stat-number">5.2km</div>
+                <div class="stat-text">Distance Today</div>
+              </div>
+            </div>
+
+            <div class="actions-title">Quick Actions</div>
+
+            <div class="action-card" onclick="goTo(3)">
+              <div class="action-left">
+                <div class="action-icon">📝</div>
+                <div class="action-text">
+                  <h4>Start New Survey</h4>
+                  <p>Collect SME data</p>
+                </div>
+              </div>
+              <span style="font-size: 22px;">→</span>
+            </div>
+
+            <div class="action-card">
+              <div class="action-left">
+                <div class="action-icon" style="background: linear-gradient(135deg, #FFA000 0%, #FFB300 100%);">📋</div>
+                <div class="action-text">
+                  <h4>View Pending Surveys</h4>
+                  <p>3 surveys not yet synced</p>
+                </div>
+              </div>
+              <span style="font-size: 22px;">→</span>
+            </div>
+
+            <div class="action-card">
+              <div class="action-left">
+                <div class="action-icon" style="background: linear-gradient(135deg, #1976D2 0%, #2196F3 100%);">🔄</div>
+                <div class="action-text">
+                  <h4>Sync Now</h4>
+                  <p>Upload pending data</p>
+                </div>
+              </div>
+              <span style="font-size: 22px;">→</span>
+            </div>
+          </div>
+
+          <!-- Survey Screen -->
+          <div id="screen3" class="screen">
+            <div class="survey-header">
+              <div class="back-arrow" onclick="goTo(2)">←</div>
+              <div class="survey-title">
+                <h3>New Survey</h3>
+                <p>Step 2 of 5: Location</p>
+              </div>
+            </div>
+
+            <div class="steps-bar">
+              <div class="step-dots">
+                <div class="dot"></div>
+                <div class="dot active"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+              </div>
+              <span style="font-size: 12px; color: #666;">Step 2 of 5</span>
+            </div>
+
+            <div class="survey-body">
+              <div class="question-title">📍 Capture Location</div>
+              <div class="question-help">
+                GPS coordinates will be automatically captured. Ensure you are standing near the business location for best accuracy.
+              </div>
+
+              <div class="location-box">
+                <div class="gps-check">✓</div>
+                <h3>Location Captured!</h3>
+                <div class="coords">
+                  Latitude: -6.0825°<br>
+                  Longitude: 145.3919°
+                </div>
+                <span class="accuracy">±8 meters accuracy</span>
+                <div class="location-place">
+                  📍 Goroka, Eastern Highlands Province
+                </div>
+              </div>
+
+              <button class="btn-secondary">🔄 Recapture Location</button>
+              <button class="btn-primary" onclick="goTo(4)">Next Step →</button>
+            </div>
+          </div>
+
+          <!-- Success Screen -->
+          <div id="screen4" class="screen">
+            <div class="success-check">✓</div>
+            <h2>Survey Submitted!</h2>
+            <p>Your survey has been saved successfully</p>
+
+            <div class="id-box">
+              <div class="id-label">Survey ID</div>
+              <div class="id-code">SME-2026-0366</div>
+            </div>
+
+            <div class="sync-notice">
+              ⚠️ <strong>Will be synced when online</strong><br>
+              <small>Survey saved locally on device</small>
+            </div>
+
+            <button class="btn-primary" onclick="goTo(2)">Return to Dashboard</button>
+            <button class="btn-secondary" onclick="goTo(3)">Start Another Survey</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Navigation Controls -->
+    <div class="nav-bar">
+      <button class="nav-btn" onclick="goTo(1)">Login</button>
+      <button class="nav-btn" onclick="goTo(2)">Dashboard</button>
+      <button class="nav-btn" onclick="goTo(3)">Survey</button>
+      <button class="nav-btn" onclick="goTo(4)">Success</button>
+    </div>
+  </div>
+
+  <script>
+    function goTo(screenNum) {
+      // Hide all screens
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+
+      // Show selected screen
+      document.getElementById('screen' + screenNum).classList.add('active');
+
+      // Scroll to top
+      document.querySelector('.screen-content').scrollTop = 0;
+    }
+
+    function setLang(lang) {
+      // Update button states
+      document.querySelectorAll('.lang-btn').forEach(btn => btn.classList.remove('active'));
+      event.target.classList.add('active');
+
+      // Update text
+      if (lang === 'tp') {
+        document.getElementById('appTitle').textContent = 'GGGI SME Kolekta';
+        document.getElementById('appSubtitle').textContent = 'Papua Niugini SME Besmen Databeis';
+      } else {
+        document.getElementById('appTitle').textContent = 'GGGI SME Collector';
+        document.getElementById('appSubtitle').textContent = 'Papua New Guinea SME Database';
+      }
+    }
+  </script>
+</body>
+</html>

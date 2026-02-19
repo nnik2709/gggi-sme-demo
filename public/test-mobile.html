@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mobile Test</title>
+  <style>
+    body { margin: 0; padding: 20px; background: #667eea; font-family: Arial; }
+    .container { max-width: 400px; margin: 0 auto; background: white; padding: 20px; border-radius: 20px; }
+    .phone { background: #000; padding: 15px; border-radius: 40px; }
+    .screen { background: #f5f5f5; border-radius: 30px; height: 600px; overflow: hidden; }
+    .top-bar { background: #2E7D32; color: white; padding: 30px 15px 10px; font-size: 12px; display: flex; justify-content: space-between; }
+    .offline { background: #FFA000; color: white; padding: 8px; text-align: center; font-size: 12px; }
+    .content { background: white; padding: 30px 20px; height: calc(100% - 100px); overflow-y: auto; }
+    .page { display: none; }
+    .page.show { display: block; }
+    .logo { width: 80px; height: 80px; background: #2E7D32; border-radius: 20px; margin: 20px auto; display: flex; align-items: center; justify-content: center; font-size: 40px; }
+    h2 { text-align: center; color: #333; margin: 10px 0; }
+    p { text-align: center; color: #666; margin-bottom: 20px; }
+    .btn { width: 100%; padding: 15px; background: #2E7D32; color: white; border: none; border-radius: 10px; font-size: 16px; cursor: pointer; margin: 10px 0; }
+    .nav { position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%); background: white; padding: 10px 20px; border-radius: 30px; box-shadow: 0 5px 20px rgba(0,0,0,0.2); }
+    .nav button { padding: 8px 15px; margin: 0 5px; border: 2px solid #2E7D32; background: white; color: #2E7D32; border-radius: 20px; cursor: pointer; }
+    .nav button:hover { background: #2E7D32; color: white; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 style="text-align: center; color: #2E7D32;">📱 Mobile Demo</h1>
+    
+    <div class="phone">
+      <div class="screen">
+        <div class="top-bar">
+          <span>9:41</span>
+          <span>📶 67%</span>
+        </div>
+        <div class="offline">🔴 Working Offline - 3 surveys pending</div>
+        
+        <div class="content">
+          <div id="page1" class="page show">
+            <div class="logo">🌱</div>
+            <h2>GGGI SME Collector</h2>
+            <p>Papua New Guinea SME Database</p>
+            <button class="btn" onclick="changePage(2)">Sign In</button>
+          </div>
+          
+          <div id="page2" class="page">
+            <h2>Welcome, Rose! 👋</h2>
+            <p>Thursday, February 6, 2026</p>
+            <div style="background: #f5f5f5; padding: 20px; border-radius: 10px; margin: 20px 0;">
+              <strong>Today's Progress: 4 / 10</strong>
+              <div style="background: #e0e0e0; height: 8px; border-radius: 10px; margin: 10px 0;">
+                <div style="background: #2E7D32; height: 8px; width: 40%; border-radius: 10px;"></div>
+              </div>
+              <small>6 more surveys to reach target</small>
+            </div>
+            <button class="btn" onclick="changePage(3)">📝 Start New Survey</button>
+            <button class="btn" style="background: #FFA000;">📋 View Pending (3)</button>
+          </div>
+          
+          <div id="page3" class="page">
+            <h2>📍 Location Capture</h2>
+            <div style="background: #f5f5f5; padding: 30px; border-radius: 15px; text-align: center; margin: 20px 0;">
+              <div style="font-size: 60px; color: #4CAF50;">✓</div>
+              <h3 style="color: #4CAF50;">Location Captured!</h3>
+              <p style="font-family: monospace; font-size: 14px;">
+                Lat: -6.0825°<br>
+                Lng: 145.3919°
+              </p>
+              <span style="background: #4CAF50; color: white; padding: 5px 12px; border-radius: 15px; font-size: 12px;">±8m accuracy</span>
+              <p>📍 Goroka, Eastern Highlands</p>
+            </div>
+            <button class="btn" onclick="changePage(4)">Next Step →</button>
+          </div>
+          
+          <div id="page4" class="page">
+            <div style="font-size: 80px; text-align: center; color: #4CAF50; margin: 40px 0;">✓</div>
+            <h2>Survey Submitted!</h2>
+            <p>Your survey has been saved</p>
+            <div style="background: #f5f5f5; padding: 15px; border-radius: 10px; text-align: center; margin: 20px 0;">
+              <small>SURVEY ID</small><br>
+              <strong style="font-family: monospace;">SME-2026-0366</strong>
+            </div>
+            <div style="background: #FFF3E0; padding: 15px; border-radius: 10px; color: #E65100; margin-bottom: 20px;">
+              ⚠️ Will be synced when online
+            </div>
+            <button class="btn" onclick="changePage(2)">Return to Dashboard</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    
+    <div class="nav">
+      <button onclick="changePage(1)">Login</button>
+      <button onclick="changePage(2)">Dashboard</button>
+      <button onclick="changePage(3)">Survey</button>
+      <button onclick="changePage(4)">Success</button>
+    </div>
+  </div>
+  
+  <script>
+    function changePage(num) {
+      // Hide all pages
+      var pages = document.querySelectorAll('.page');
+      for (var i = 0; i < pages.length; i++) {
+        pages[i].classList.remove('show');
+      }
+      
+      // Show selected page
+      document.getElementById('page' + num).classList.add('show');
+      
+      // Scroll to top
+      document.querySelector('.content').scrollTop = 0;
+      
+      console.log('Changed to page ' + num);
+    }
+    
+    // Test on load
+    console.log('JavaScript is working!');
+  </script>
+</body>
+</html>
